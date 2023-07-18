@@ -6,22 +6,30 @@
 
 #define BUFFER_SIZE 1024
 
-char* read_user_input() {
-    char* input = malloc(sizeof(char) * BUFFER_SIZE);
+/**
+ * Reads user input from stdin.
+ *
+ * Returns:
+ *   - Dynamically allocated string containing the user input.
+ *   - The caller is responsible for freeing the allocated memory.
+ */
+char *shell_read_user_input()
+{
+    char *input = malloc(sizeof(char) * BUFFER_SIZE);
 
-    if (!input) {
+    if (!input)
+    {
         perror("Memory allocation error");
         exit(EXIT_FAILURE);
     }
 
     printf("$ ");
-    if (fgets(input, BUFFER_SIZE, stdin) == NULL) {
-        // Handle end of file condition (Ctrl+D)
+    if (fgets(input, BUFFER_SIZE, stdin) == NULL)
+    {
         free(input);
         return NULL;
     }
 
-    // Remove newline character at the end
     size_t length = strlen(input);
     if (input[length - 1] == '\n')
         input[length - 1] = '\0';
@@ -29,56 +37,87 @@ char* read_user_input() {
     return input;
 }
 
-void execute_command(char* command) {
-    if (command == NULL) {
-        // Empty command, do nothing
+/**
+ * Executes the given command.
+ *
+ * Arguments:
+ *   - command: A single word representing the executable.
+ *
+ * Notes:
+ *   - If the command is empty, it does nothing.
+ */
+void shell_execute_command(char *command)
+{
+    if (command == NULL)
+    {
         return;
     }
 
     pid_t pid = fork();
 
-    if (pid == -1) {
+    if (pid == -1)
+    {
         perror("Fork error");
         exit(EXIT_FAILURE);
-    } else if (pid == 0) {
-        // Child process
+    }
+    else if (pid == 0)
+    {
         int result = execlp(command, command, NULL);
 
-        if (result == -1) {
+        if (result == -1)
+        {
             perror("Error executing command");
             exit(EXIT_FAILURE);
         }
-    } else {
-        // Parent process
+    }
+    else
+    {
         int status;
         waitpid(pid, &status, 0);
 
-        if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+        if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+        {
             fprintf(stderr, "Command execution failed with exit status: %d\n", WEXITSTATUS(status));
         }
     }
 }
 
-void shell_loop() {
-    char* input;
-    int status = 1; // Initialize status to a non-zero value
+/**
+ * Implements the main shell loop.
+ *
+ * Notes:
+ *   - Reads user input, executes the command,
+ *  and repeats until the end of file condition is encountered
+ */
+void pat_shell_loop()
+{
+    char *input;
+    int status = 1;
 
-    do {
-        input = read_user_input();
+    do
+    {
+        input = shell_read_user_input();
 
-        if (input == NULL) {
-            // Handle end of file (Ctrl+D)
+        if (input == NULL)
+        {
             break;
         }
 
-        execute_command(input);
+        shell_execute_command(input);
 
         free(input);
     } while (status);
 }
 
-int main() {
-    shell_loop();
+/**
+ * Entry point of the program.
+ *
+ * Notes:
+ *   - Starts the shell loop.
+ */
+int main()
+{
+    pat_shell_loop();
 
     return EXIT_SUCCESS;
 }
