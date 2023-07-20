@@ -9,5 +9,7 @@
 char *user_input(void);
 void shell_execute_command(char *command, char **arg[]);
 void pat_shell_loop(void);
+char** parse_user_input(char* input) 
 int main(void);
+
 #endif
