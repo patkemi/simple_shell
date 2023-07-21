@@ -13,5 +13,6 @@ void shell_execute_command(char *command, char **args);
 void pat_shell_loop(void);
 char **parse_user_input(char *input);
 int main(void);
+int pat_shell_exit_builtin(char* command);
 
 #endif
