@@ -23,7 +23,7 @@ char *user_input(void)
 		free(input);
 		return (NULL);
 	}
-	size_t length = strlen(input);
+	length = strlen(input);
 
 	if (input[length - 1] == '\n')
 	input[length - 1] = '\0';
