@@ -14,5 +14,6 @@ void pat_shell_loop(void);
 char **parse_user_input(char *input);
 int main(void);
 int pat_shell_exit_builtin(char* command);
+void pat_execute_builtin(char* command);
 
 #endif
