@@ -18,7 +18,7 @@ void pat_shell_loop(void)
 		{
 			if (pat_shell_exit_builtin(tokens[0]))
 			{
-				status = 0;
+				pat_execute_builtin(tokens[0]);
 			} else
 			{
 				shell_execute_command(tokens[0], tokens);
