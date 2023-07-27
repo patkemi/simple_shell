@@ -1,32 +1,37 @@
 #include "shell_main.h"
 /**
- * user_input - Reads user input from stdin.
- *
- * Return: returns dynamically allocated string containing the user input.
- * The caller is responsible for freeing the allocated memory.
+ * user_input - function that accepts input from user.
+ * @shell: pointer to the struct.
+ * Return: return string input.
  */
-char *user_input(void)
+char *user_input(simple_shell *shell)
 {
-	size_t length;
-	char *input;
+	size_t len = 0;
+	char *input = NULL;
+	ssize_t text_read;
 
-	input = malloc(sizeof(char) * BUFFER_SIZE);
-
-	if (!input)
+	if (isatty(STDIN_FILENO))
 	{
-		perror("Memory allocation error");
-		exit(EXIT_FAILURE);
+		write(1, "#simple_shell$ ", 15);
 	}
-	write(1, "#simple_shell$ ", 15);
-	if (fgets(input, BUFFER_SIZE, stdin) == NULL)
+	text_read = getline(&input, &len, stdin);
+	if (text_read == 1)
 	{
-		free(input);
-		return (NULL);
+		if (feof(stdin))
+		{
+			free(input);
+			return (NULL);
+		}
+		else
+		{
+			perror("Error reading input");
+			free(input);
+		}
 	}
-	length = strlen(input);
-
-	if (input[length - 1] == '\n')
-	input[length - 1] = '\0';
-
+	else if (text_read > 1 && input[text_read - 1] == '\n')
+	{
+		input[text_read - 1] = '\0';
+	}
+	shell->input = input;
 	return (input);
 }

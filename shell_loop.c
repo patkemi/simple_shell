@@ -1,34 +1,48 @@
 #include "shell_main.h"
 /**
-*pat_shell_loop - function that loop shell
-*
-*/
-void pat_shell_loop(void)
+ * shell_loop - function that loops shell
+ * @av: argument vectors
+ * @shell: pointer to the shell
+ */
+void shell_loop(char *av[], simple_shell *shell)
 {
-	char *input;
-	char **tokens;
-	int status = 1;
-	int i;
+	char *input, *command;
+	char **tokens = NULL;
+	int (*f)(simple_shell *shell, char **args) = NULL, status, i;
 
-	while (status)
+	while (1)
 	{
-		input = user_input();
-		tokens = parse_user_input(input);
-		if (tokens[0] != NULL)
+		input = user_input(shell);
+		if (input == NULL)
 		{
-			if (pat_shell_exit_builtin(tokens[0]))
+			continue;
+		}
+		tokens = tokeniz(input, ";");
+
+		if (tokens != NULL)
+		{
+			i = 0;
+			while (tokens[i] != NULL)
 			{
-				status = 0;
-			} else
-			{
-				shell_execute_command(tokens[0], tokens);
+				shell->args = tokeniz(tokens[i], " \t\n");
+				if (shell->args != NULL && shell->args[0] != NULL)
+				{
+					command = shell->args[0];
+					f = execute_builtin(command)
+					if (f != NULL)
+					{
+						status = f(shell, shell->args);
+					if (status == 0)
+					{
+						free_args(shell->args);
+					}
+					}
+					else
+						execute_command(av, shell->args, shell);
+				}
+				i++;
 			}
 		}
-		free(input);
-		for (i = 0; tokens[i] != NULL; i++)
-		{
-			free(tokens[i]);
-		}
-		free(tokens);
+		free_tokens(tokens);
 	}
 }

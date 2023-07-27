@@ -1,11 +1,20 @@
 #include "shell_main.h"
 /**
- * main - Starts the shell loop.
- * Return: on success (EXIT_SUCCESS)
+ * main - main function
+ * @ac: unused command line argument
+ * @av: argument vector
+ * Return: the status of the data
  */
-int main(void)
+int main(int ac, char **av)
 {
-	pat_shell_loop();
+	simple_shell shell;
 
-	return (EXIT_SUCCESS);
+	(void)ac;
+
+	shell.environ = environ;
+
+	shell_loop(av, &shell);
+	cleanup(&shell);
+
+	return (0);
 }

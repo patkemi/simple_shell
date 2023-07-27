@@ -1,74 +1,34 @@
 #include "shell_main.h"
-
 /**
- * shell_execute_command - function that executes commands
- * inputed to the shell
- * @command: command inputed
- *
+ * execute_command - function that executes shell command
+ * @av: argument vector.
+ * @args: command arguments
+ * @shell: pointer to the struct
  */
-void shell_execute_command(char *command, char **args)
+void execute_command(char **av, char **args, simple_shell *shell)
 {
-	int result, status;
-	pid_t child_pid;
-	char path[MAX_PATH_LENGTH];
-	char *dir;
-	char *path_env;
-	char full_path[MAX_PATH_LENGTH];
+	char *full_path;
 
-	if (command == NULL || args == NULL || args[0] == NULL)
+	full_path = find_full_path(args[0]);
+	if (full_path == 0)
+	shell->pid = fork();
+	if (shell->pid == -1)
 	{
-		return;
+		perror("Fork failed");
 	}
-
-
-	path_env = getenv("PATH");
-
-	if (path_env == NULL)
+	else if (shell->pid == 0)
 	{
-		fprintf(stderr, "Error: PATH environment variable is not set.\n");
-		return;
-	}
-
-	strncpy(path, path_env, sizeof(path) - 1);
-	dir = strtok(path, ":");
-
-	while (dir != NULL)
-	{
-
-		snprintf(full_path, sizeof(full_path), "%s/%s", dir, command);
-
-		result = access(full_path, X_OK);
-
-		if (result == 0)
+		if (execvp(args[0], args) == -1)
 		{
-			child_pid = fork();
-			if (child_pid == -1)
-			{
-				perror("fork error");
-				exit(EXIT_FAILURE);
-			} else if (child_pid == 0)
-			{
-
-				execv(full_path, args);
-				perror("Error executing command");
-				exit(EXIT_FAILURE);
-			} else
-			{
-
-				waitpid(child_pid, &status, 0);
-
-
-				if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-				{
-					fprintf(stderr, "Command execution failed with exit status: %d\n", WEXITSTATUS(status));
-				}
-				return;
-			}
+			fprintf(stderr, "%s: No such file or directory\n", av[0]);
 		}
-
-		dir = strtok(NULL, ":");
 	}
-
-	fprintf(stderr, "Command not found: %s\n", command);
-
+	else
+	{
+		waitpid(shell->pid, &(shell->status), 0);
+	}
+	if (WIFEXITED(shell->status) && WEXITSTATUS(shell->status) != 0)
+	{
+		printf("\n");
+	}
 }
