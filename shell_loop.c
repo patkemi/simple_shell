@@ -28,7 +28,7 @@ void shell_loop(char *av[], simple_shell *shell)
 				if (shell->args != NULL && shell->args[0] != NULL)
 				{
 					command = shell->args[0];
-					f = execute_builtin(command)
+					f = execute_builtin(command);
 					if (f != NULL)
 					{
 						status = f(shell, shell->args);

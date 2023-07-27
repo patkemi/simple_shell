@@ -10,6 +10,7 @@ int builtin_unsetenv(simple_shell *shell, char **args)
 	char **environ = shell->environ;
 	size_t len = strlen(args[1]);
 	int i = 0;
+	int j;
 
 	if (args[1] == NULL)
 	{

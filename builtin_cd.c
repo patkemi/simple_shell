@@ -7,8 +7,7 @@
  */
 int builtin_cd(simple_shell *shell, char **args)
 {
-	char *home_dir, *pre_dir, *old_pwd;
-	char current_dir[4096];
+	char *home_dir, *prev_dir, *old_pwd, current_dir[4096];
 
 	(void)shell;
 	if (args[1] == NULL)
@@ -17,7 +16,6 @@ int builtin_cd(simple_shell *shell, char **args)
 		if (chdir(home_dir) != 0)
 		{
 			perror("cd");
-			returm (-1);
 		}
 	}
 	else if (_strcmp(args[1], "-") == 0)
@@ -47,7 +45,6 @@ int builtin_cd(simple_shell *shell, char **args)
 	else
 	{
 		perror("cd");
-		return (-1);
 	}
 	return (0);
 }
