@@ -1,20 +1,28 @@
 #include "shell_main.h"
 /**
  * main - main function
- * @ac: unused command line argument
- * @av: argument vector
+ * @argc: unused command line argument
+ * @argv: argument vector
  * Return: the status of the data
  */
-int main(int ac, char **av)
+
+int main(int argc, char **argv)
 {
-	simple_shell shell;
+	simple_shell *shell;
 
-	(void)ac;
+	(void)argc;
+	shell = (simple_shell *)malloc(sizeof(simple_shell));
+	if (shell == NULL)
+	{
+		perror("Memory allocation failed");
+		exit(EXIT_FAILURE);
+	}
 
-	shell.environ = environ;
+	init_shell(shell);
 
-	shell_loop(av, &shell);
-	cleanup(&shell);
+	shell_loop(argv, shell);
 
+
+	free(shell);
 	return (0);
 }

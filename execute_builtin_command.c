@@ -9,10 +9,6 @@ int (*execute_builtin(char *command))(simple_shell *, char **args)
 {
 	builtin_t builtins[] = {
 		{"exit", builtin_exit},
-		{"cd", builtin_cd},
-		{"env", builtin_env},
-		{"setenv", builtin_setenv},
-		{"unsetenv", builtin_unsetenv},
 		{NULL, NULL}
 	};
 

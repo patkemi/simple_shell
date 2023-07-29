@@ -6,43 +6,21 @@
  */
 void shell_loop(char *av[], simple_shell *shell)
 {
-	char *input, *command;
-	char **tokens = NULL;
-	int (*f)(simple_shell *shell, char **args) = NULL, status, i;
+	char *input, *args[] = {NULL, NULL};
 
 	while (1)
 	{
 		input = user_input(shell);
-		if (input == NULL)
+		if (!input)
 		{
-			continue;
+			free(input);
+			break;
 		}
-		tokens = tokeniz(input, ";");
-
-		if (tokens != NULL)
+		else
 		{
-			i = 0;
-			while (tokens[i] != NULL)
-			{
-				shell->args = tokeniz(tokens[i], " \t\n");
-				if (shell->args != NULL && shell->args[0] != NULL)
-				{
-					command = shell->args[0];
-					f = execute_builtin(command)
-					if (f != NULL)
-					{
-						status = f(shell, shell->args);
-					if (status == 0)
-					{
-						free_args(shell->args);
-					}
-					}
-					else
-						execute_command(av, shell->args, shell);
-				}
-				i++;
-			}
+			args[0] = input;
+			execute_command(av, args, shell);
 		}
-		free_tokens(tokens);
+		free(input);
 	}
 }

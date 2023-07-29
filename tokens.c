@@ -29,6 +29,7 @@ char **tokeniz(char *str, const char *delimiter)
 		tokens[count] = _strdup(token);
 	if (!tokens[count])
 	{
+		free_tokens(tokens);
 		return (NULL);
 	}
 	count++;
@@ -37,7 +38,7 @@ char **tokeniz(char *str, const char *delimiter)
 	tokens = (char **)realloc(tokens, (count + 1) * sizeof(char *));
 	if (!tokens)
 	{
-		free(new_str);
+		free_tokens(tokens);
 		return (NULL);
 	}
 	tokens[count] = NULL;
