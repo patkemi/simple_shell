@@ -12,22 +12,25 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <limits.h>
+#include <sys/stat.h>
 
 #define BUFFER_SIZE 1024
-#define MAX_COMMAND_LENGTH 100
 /**
  * struct simple_shell - structure for shell data.
  * @input: user input commands
  * @av: argument vectors
+ * @environ: shell environment.
  * @pid: process identification number
  * @args: arguments passed
+ * @status: process status
  */
 typedef struct simple_shell
 {
 	char *input;
-	pid_t pid;
-	char **args;
 	char **av;
+	char **args;
+	pid_t pid;
+	int status; /*stores status of process*/
 } simple_shell;
 /**
  * struct builtin_f - structure of builting functions.
@@ -39,17 +42,15 @@ typedef struct builtin_f
 	char *name;
 	int (*func)(simple_shell *shell, char **args);
 } builtin_t;
-char *find_full_path(const char *command);
 /****functions1 ******/
 void _sigint(int __attribute__ ((unused)) signal);
-void init_shell(simple_shell *shell);
 void shell_loop(char *av[], simple_shell *shell);
 char **tokeniz(char *str, const char *delimiter);
 char *user_input(simple_shell *shell);
+char **environ_copy();
 void execute_command(char **av, char **args, simple_shell *shell);
 /***builtin functions*****/
 int builtin_exit(simple_shell *shell, char **args);
-int builtin_cd(simple_shell *shell, char **args);
 int (*execute_builtin(char *command))(simple_shell *, char **args);
 /*****helper functions******/
 int _strcmp(char *str1, char *str2);

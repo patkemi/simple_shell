@@ -7,24 +7,24 @@
  */
 void execute_command(char **av, char **args, simple_shell *shell)
 {
-	int status = 0;
-	pid_t pid = fork();
-
-	if (pid == -1)
+	shell->pid = fork();
+	if (shell->pid == -1)
 	{
 		perror("Fork failed");
 	}
-	else if (pid == 0)
+	else if (shell->pid == 0)
 	{
 		if (execve(args[0], args, NULL) == -1)
 		{
 			fprintf(stderr, "%s: No such file or directory\n", av[0]);
-			exit(EXIT_FAILURE);
 		}
 	}
 	else
 	{
-		shell->pid = pid;
-		waitpid(pid, &status, 0);
+		waitpid(shell->pid, &(shell->status), 0);
+	}
+	if (WIFEXITED(shell->status) && WEXITSTATUS(shell->status) != 0)
+	{
+		printf("\n");
 	}
 }

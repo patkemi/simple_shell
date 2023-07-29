@@ -6,22 +6,32 @@
  */
 char *user_input(simple_shell *shell)
 {
-	size_t len = 0, input_len;
+	size_t len = 0;
 	char *input = NULL;
-	ssize_t text_read;
+	int input_size;
 
 	write(1, "#simple_shell$ ", 15);
-	text_read = getline(&input, &len, stdin);
-	if (text_read == -1)
+	if ((getline(&input, &len, stdin) == -1))
 	{
-		free(input);
-		return (NULL);
+		if (feof(stdin))
+		{
+			free(input);
+			return (NULL);
+		}
+		else
+		{
+			perror("Error reading input");
+			free(input);
+			return (NULL);
+		}
 	}
-	input_len = _strlen(input);
-	if (input_len > 0 && input[input_len - 1] == '\n')
+	input_size = _strlen(input);
+
+	if (input != NULL && input[input_size - 1] == '\n')
 	{
-		input[input_len - 1] = '\0';
+		input[input_size - 1] = '\0';
 	}
 	shell->input = _strdup(input);
-	return (input);
+
+	return (shell->input);
 }

@@ -9,4 +9,6 @@ void init_shell(simple_shell *shell)
 	shell->input = NULL;
 	shell->args = NULL;
 	shell->pid = 0;
+	shell->av = NULL;
+
 }

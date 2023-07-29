@@ -21,6 +21,6 @@ void shell_loop(char *av[], simple_shell *shell)
 			args[0] = input;
 			execute_command(av, args, shell);
 		}
-		free(input);
 	}
+	free(input);
 }

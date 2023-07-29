@@ -5,7 +5,6 @@
  * @argv: argument vector
  * Return: the status of the data
  */
-
 int main(int argc, char **argv)
 {
 	simple_shell *shell;
@@ -17,8 +16,6 @@ int main(int argc, char **argv)
 		perror("Memory allocation failed");
 		exit(EXIT_FAILURE);
 	}
-
-	init_shell(shell);
 
 	shell_loop(argv, shell);
 
