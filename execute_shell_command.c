@@ -14,7 +14,7 @@ void execute_command(char **av, char **args, simple_shell *shell)
 	}
 	else if (shell->pid == 0)
 	{
-		if (execve(args[0], args, NULL) == -1)
+		if (execve(args[0], args, environ) == -1)
 		{
 			fprintf(stderr, "%s: No such file or directory\n", av[0]);
 		}

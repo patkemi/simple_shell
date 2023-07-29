@@ -6,7 +6,7 @@
  */
 void shell_loop(char *av[], simple_shell *shell)
 {
-	char *input, *args[] = {NULL, NULL};
+	char *input, **args = NULL;
 
 	while (1)
 	{
@@ -18,9 +18,13 @@ void shell_loop(char *av[], simple_shell *shell)
 		}
 		else
 		{
+			args = (char **)malloc(2 * sizeof(char *));
+
 			args[0] = input;
+			args[1] = NULL;
 			execute_command(av, args, shell);
+			free(args[0]);
+			free(args);
 		}
 	}
-	free(input);
 }
